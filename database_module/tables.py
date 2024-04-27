@@ -1,8 +1,33 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, Enum, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, DateTime, Enum, ForeignKey, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
+
+
+card_event_association = Table(
+    'cards_event', Base.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("event_id", Integer, ForeignKey('events.id'), nullable=False),
+    Column("card_id", Integer, ForeignKey('cards.id'), nullable=False)
+)  
+
+
+player_card_association = Table(
+    'player_card', Base.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("player_id", Integer, ForeignKey('player.id'), nullable=False),
+    Column("card_id", Integer, ForeignKey('cards.id'), nullable=False),
+    Column("count", Integer, nullable=False)
+)   
+
+
+location_event_association = Table(
+    'location_event', Base.metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("locations_id", Integer, ForeignKey('locations.id'), nullable=False),
+    Column("events_id", Integer, ForeignKey('events.id'), nullable=False)
+)   
 
 
 class Client(Base):
@@ -24,8 +49,10 @@ class Location(Base):
     street = Column(String, nullable=False)
     house_number = Column(String, nullable=False)
     
-    devices = relationship('Device', back_populates='location')
+    # devices = relationship('Device', back_populates='location')
+    event_location = relationship("Events", secondary=location_event_association, back_populates="location_event")
     client = relationship('Client', back_populates='locations')
+    location_points = relationship('LocationPoint', back_populates='location')
 
 class Device(Base):
     __tablename__ = 'devices'
@@ -60,8 +87,8 @@ class LocationPoint(Base):
     
     location = relationship('Location', back_populates='location_points')
 
-class Card(Base):
-    __tablename__ = 'card'
+class Cards(Base):
+    __tablename__ = 'cards'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
@@ -71,7 +98,8 @@ class Card(Base):
     damage = Column(Integer, nullable=False)
     speed = Column(Integer, nullable=False)
     
-    cards = relationship('PlayerCards', back_populates='card')
+    cards = relationship('Player', secondary=player_card_association, back_populates='players')
+    events = relationship('Events', secondary=card_event_association, back_populates='event_cards')
     raritytable = relationship('Rarity', back_populates='rarity')
     
     
@@ -82,18 +110,8 @@ class Player(Base):
     name = Column(String, nullable=False)
     login = Column(String, nullable=False)
     
-    players = relationship('PlayerCards', back_populates='player')
+    players = relationship('Cards', secondary=player_card_association, back_populates='cards')
     
-class PlayerCards(Base):
-    __tablename__ = 'player_cards'
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    player_id = Column(Integer, ForeignKey('player.id'), nullable=False)
-    card_id = Column(Integer, ForeignKey('card.id'), nullable=False)
-    count = Column(Integer, nullable=False)
-    
-    player = relationship('Player', back_populates='players')
-    card = relationship('Card', back_populates='cards')
     
 class CardTypes(Base):
     __tablename__ = 'card_types'
@@ -109,18 +127,8 @@ class Events(Base):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     
-    events = relationship('CardEvent', back_populates='event')
-    
-    
-class CardsEvent(Base):
-    __tablename__ = 'cards_event'
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    event_id = Column(Integer, ForeignKey('events.id'), nullable=False)
-    card_id = Column(Integer, ForeignKey('card.id'), nullable=False)
-    
-    event = relationship('Events', back_populates='events')
-    card = relationship('Card', back_populates='cards')
+    event_cards = relationship('Cards', secondary=card_event_association, back_populates='events')
+    location_event = relationship('Location', secondary=location_event_association, back_populates='event_location')
     
 
 class Rarity(Base):
@@ -130,15 +138,4 @@ class Rarity(Base):
     name = Column(String, nullable=False)
     chance = Column(Integer, nullable=False)
     
-    rarity = relationship('Card', back_populates='raritytable')
-    
-class LocationEvent(Base):
-    __tablename__ = 'location_event'
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    locations_id = Column(Integer, ForeignKey('locations.id'), nullable=False)
-    events_id = Column(Integer, ForeignKey('events.id'), nullable=False)
-    
-    event = relationship('Events', back_populates='events')
-    location = relationship('Location', back_populates='location_points')
- 
+    rarity = relationship('Cards', back_populates='raritytable')

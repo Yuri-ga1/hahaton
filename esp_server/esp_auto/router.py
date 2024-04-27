@@ -10,7 +10,7 @@ async def data_receiver(data: ESP_data):
     date = datetime.fromtimestamp(data.date)
     device_id = await database.get_id_by_mac(data.mac)
     if device_id:
-        database.save_data(
+       await database.save_data(
             device_id,
             data.pTwo_Half,
             data.p10,
@@ -23,8 +23,8 @@ async def data_receiver(data: ESP_data):
        
 @router.post("/registerDevice")
 async def register_device(mac: str):
-    device = database.get_id_by_mac(mac)
+    device = await database.get_id_by_mac(mac)
     if device is None:
-        database.add_device(mac)
+        await database.add_device(mac)
     # else:
         # HTTPException(409, detail="Device alredy exists")
