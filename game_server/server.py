@@ -5,6 +5,7 @@ import asyncio
 from database_module.database import database
 
 from game_hands.router import router as game_hands_router
+from game_auto.router import router as game_auto_router
 
 async def _add_rarity():
     basic_rarity = ["Бронза", "Серебро", "Золото"]
@@ -21,6 +22,7 @@ async def _add_types():
 
 app = FastAPI()
 app.include_router(game_hands_router)
+app.include_router(game_auto_router)
 
 
 @app.on_event("startup")

@@ -110,7 +110,7 @@ class Player(Base):
     __tablename__ = 'player'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
-    nikcname = Column(String, nullable=False)
+    nickname = Column(String, nullable=False)
     login = Column(String, nullable=False)
     
     players = relationship('Cards', secondary=player_card_association, back_populates='cards')

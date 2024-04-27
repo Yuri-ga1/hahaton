@@ -84,6 +84,13 @@ class Database:
             .first()
             
         return type.id if type else None
+    
+    async def get_player(self, nickname: str):
+        player = self.session.query(Player)\
+            .filter(Player.nickname == nickname)\
+            .first()
+            
+        return player if player else None
         
     
     async def add_device(self, mac: str, location_id: int):
@@ -202,6 +209,15 @@ class Database:
             events_id=event_id
         )
         self.session.execute(location_on_event)
+        self.session.commit()
+        
+    
+    async def add_player(self, nickname: str, login: str):
+        new_player = Player(
+            nickname=nickname,
+            login=login
+        )
+        self.session.add(new_player)
         self.session.commit()
         
 
