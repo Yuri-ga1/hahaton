@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 
 class Client(BaseModel):
@@ -13,3 +14,9 @@ class Location(BaseModel):
     city_name: str
     street: str
     house_number: str
+    
+
+class LocationPoints(BaseModel):
+    location: Location
+    longitude: List[float]
+    latitude: List[float]

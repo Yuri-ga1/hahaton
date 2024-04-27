@@ -21,9 +21,6 @@ async def add_client(client: Client):
             client.email
         )
     
-    
-
-    
 
 @router.post("/addClientLocation")
 async def add_client_location(location: Location):
@@ -41,3 +38,29 @@ async def add_client_location(location: Location):
         )
     else:
         raise HTTPException(404, "Client is not exist")
+    
+    
+@router.post("/addLocationPoints")
+async def add_location_points(location_poins: LocationPoints):
+    location: Location = location_poins.location
+    location_id = await database.get_location_id(
+        location.region,
+        location.city_name,
+        location.street,
+        location.house_number
+    )
+    
+    if len(location_poins.longitude) != len(location_poins.latitude):
+        raise HTTPException(400, "Invalid points format")
+    
+    if location_id:
+        for longitude, latitude in zip(location_poins.longitude, location_poins.latitude):
+            await database.add_location_point(
+                location_id=location_id,
+                longitude=longitude,
+                latitude=latitude
+            )
+    else:
+        raise HTTPException(404, "Location is not exist")
+        
+    

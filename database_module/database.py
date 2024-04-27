@@ -37,7 +37,25 @@ class Database:
             .filter(Client.email == email)\
             .first()
             
-        return client.email if client else None
+        return client.id if client else None
+    
+    async def get_location_id(
+        self,
+        region: str,
+        city: str,
+        street: str,
+        house_nomber: str
+    ):
+        location = self.session.query(Location)\
+            .filter(
+                Location.region == region,
+                Location.city_name == city,
+                Location.street == street,
+                Location.house_number == house_nomber
+                )\
+            .first()
+            
+        return location.id if location else None  
         
     
     async def add_device(self, mac: str, location_id: int):
@@ -74,6 +92,22 @@ class Database:
         )
         self.session.add(new_location)
         self.session.commit()
+        
+    
+    async def add_location_point(
+        self,
+        location_id: int,
+        longitude: float,
+        latitude: float
+    ):
+        new_locationPoint = LocationPoint(
+            location_id=location_id,
+            longitude=longitude,
+            latitude=latitude
+        )
+        self.session.add(new_locationPoint)
+        self.session.commit()
+        
 
     async def save_data(
         self,
