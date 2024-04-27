@@ -2,4 +2,6 @@ from pydantic import BaseModel
 
 
 class Client(BaseModel):
-    name: 
+    name: str
+    lastname: str
+    email: str

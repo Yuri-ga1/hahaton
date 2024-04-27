@@ -4,14 +4,14 @@ import asyncio
 from database_module.database import database
 
 from esp_auto.router import router as esp_auto_router
-# from esp_hands.router import router as esp_hands_router
+from esp_hands.router import router as esp_hands_router
 
 
 app = FastAPI()
 
 
 app.include_router(esp_auto_router)
-# app.include_router(esp_hands_router)
+app.include_router(esp_hands_router)
 
 
 @app.on_event("startup")
