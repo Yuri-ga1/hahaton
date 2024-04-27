@@ -39,6 +39,13 @@ class Database:
             
         return client.id if client else None
     
+    async def get_card(self, name: str):
+        card = self.session.query(Cards)\
+            .filter(Cards.name == name)\
+            .first()
+            
+        return card if card else None
+    
     async def get_location_id(
         self,
         region: str,
@@ -56,6 +63,13 @@ class Database:
             .first()
             
         return location.id if location else None  
+    
+    async def get_rarity_id(self, name: str):
+        rarity = self.session.query(Rarity)\
+            .filter(Rarity.name == name)\
+            .first()
+            
+        return rarity.id if rarity else None
         
     
     async def add_device(self, mac: str, location_id: int):
@@ -106,6 +120,45 @@ class Database:
             latitude=latitude
         )
         self.session.add(new_locationPoint)
+        self.session.commit()
+        
+    async def add_rarity(self, rarity: str, chance: float):
+        rarity_id = await self.get_rarity_id(rarity)
+        if rarity_id is None:
+            new_rarity = Rarity(
+                name=rarity,
+                chance=chance
+            )
+            self.session.add(new_rarity)
+            self.session.commit()
+            
+    async def add_event(self, name, description):
+        new_event = Events(
+            name=name,
+            description=description
+        )
+        self.session.add(new_event)
+        self.session.commit()
+        
+    
+    async def add_card(
+        self,
+        name: str,
+        type: str,
+        rarity_id: int,
+        hp: int,
+        damage: int,
+        speed: int
+    ):
+        new_card = Cards(
+            name=name,
+            type=type,
+            rarity_id=rarity_id,
+            hp=hp,
+            damage=damage,
+            speed=speed
+        )
+        self.session.add(new_card)
         self.session.commit()
         
 

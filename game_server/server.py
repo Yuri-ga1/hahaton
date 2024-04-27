@@ -1,18 +1,26 @@
 from fastapi import FastAPI, HTTPException
 import uvicorn
 import asyncio
+
 from database_module.database import database
 
-from sites.router import router as sites_router
-from data_worker.router import router as data_worker_router
+from game_hands.router import router as game_hands_router
+
+async def _add_rarity():
+    basic_rarity = ["Бронза", "Серебро", "Золото"]
+    basic_chance = [70, 20, 10]
+    for rarity, chance in zip(basic_rarity, basic_chance):
+        await database.add_rarity(rarity, chance)
 
 
 app = FastAPI()
+app.include_router(game_hands_router)
 
 
 @app.on_event("startup")
 async def startup():
-    database.connect()
+    await database.connect()
+    await _add_rarity()
 
 
 @app.on_event("shutdown")
