@@ -48,7 +48,7 @@ class Database:
         pm10: float,
         # temperature: float,
         # humidity: float,
-        date: datetime = datetime.now().replace(microsecond=0)
+        date: datetime = datetime.now()
     ):
         new_data = Data(
             device_id=device_id,
