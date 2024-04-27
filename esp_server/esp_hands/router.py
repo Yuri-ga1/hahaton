@@ -20,7 +20,29 @@ async def add_client(client: Client):
             client.lastname,
             client.email
         )
-    
+
+
+@router.post("/addLocation")
+async def add_location(location: Location):
+    old_location = await database.get_location_id(
+        region=location.region,
+        city=location.city_name,
+        street=location.house_number,
+        house_number=location.house_number
+    )
+    if old_location:
+        print(old_location)
+        raise HTTPException(409, detail=f"Location alredy exists")
+    else:
+        client_id = await database.get_client_by_email(location.client_email)
+        await database.add_location(
+            client_id=client_id,
+            region=location.region,
+            city_name=location.city_name,
+            street=location.street,
+            house_number=location.house_number
+        )
+        
 
 @router.post("/addClientLocation")
 async def add_client_location(location: Location):

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from esp_server.esp_hands.schemas import Location
 
 class Event(BaseModel):
     name: str
@@ -27,3 +28,8 @@ class Type(BaseModel):
 class CardToEvent(BaseModel):
     card_name: str
     event_name: str
+    
+    
+class EventLocation(BaseModel):
+    event_name: str
+    location: Location

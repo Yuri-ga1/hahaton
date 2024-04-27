@@ -51,14 +51,14 @@ class Database:
         region: str,
         city: str,
         street: str,
-        house_nomber: str
+        house_number: str
     ):
         location = self.session.query(Location)\
             .filter(
                 Location.region == region,
                 Location.city_name == city,
                 Location.street == street,
-                Location.house_number == house_nomber
+                Location.house_number == house_number
                 )\
             .first()
             
@@ -193,6 +193,15 @@ class Database:
             card_id=card_id
         )
         self.session.execute(new_card_on_event)
+        self.session.commit()
+        
+    
+    async def add_location_event(self, location_id: int, event_id: int):
+        location_on_event = insert(location_event_association).values(
+            locations_id=location_id,
+            events_id=event_id
+        )
+        self.session.execute(location_on_event)
         self.session.commit()
         
 

@@ -65,3 +65,20 @@ async def add_card_to_event(card_event: CardToEvent):
     await database.add_card_to_event(card.id, event.id)
         
         
+@router.post("/addEventLocation")
+async def add_card_to_event(event_location: EventLocation):
+    location = event_location.location
+    location_id = await database.get_location_id(
+        location.region,
+        location.city_name,
+        location.street,
+        location.house_number
+    )
+    event = await database.get_event(event_location.event_name)
+    
+    if location_id is None:
+        raise HTTPException(404, "Location is not exist")
+    if event is None:
+        raise HTTPException(404, "Event is not exist")
+    
+    await database.add_location_event(location_id, event.id)        
