@@ -12,3 +12,13 @@ class Card(BaseModel):
     hp: int
     damage: int
     speed: int
+    
+
+class Rarity(BaseModel):
+    name: str
+    chance: float
+    
+
+class Type(BaseModel):
+    name: str
+    dominate: str

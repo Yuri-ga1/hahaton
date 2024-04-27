@@ -70,6 +70,13 @@ class Database:
             .first()
             
         return rarity.id if rarity else None
+    
+    async def get_type_id(self, name: str):
+        type = self.session.query(Types)\
+            .filter(Types.name == name)\
+            .first()
+            
+        return type.id if type else None
         
     
     async def add_device(self, mac: str, location_id: int):
@@ -160,6 +167,18 @@ class Database:
         )
         self.session.add(new_card)
         self.session.commit()
+        
+    
+    async def add_type(self, type: str, slave: str):
+        type_id = await self.get_type_id(type)
+        slave_id = await self.get_type_id(slave)
+        if type_id is None:
+            new_type = Types(
+                name=type,
+                dominates=slave_id
+            )
+            self.session.add(new_type)
+            self.session.commit()
         
 
     async def save_data(

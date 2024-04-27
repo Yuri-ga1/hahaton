@@ -94,7 +94,7 @@ class Cards(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
-    type = Column(Enum('writer', 'historical_figure', 'literary_character'), nullable=False)
+    type = Column(Integer, ForeignKey('types.id'), nullable=False)
     rarity_id = Column(Integer, ForeignKey('rarity.id'), nullable=False)
     hp = Column(Integer, nullable=False)
     damage = Column(Integer, nullable=False)
@@ -103,6 +103,7 @@ class Cards(Base):
     cards = relationship('Player', secondary=player_card_association, back_populates='players')
     events = relationship('Events', secondary=card_event_association, back_populates='event_cards')
     raritytable = relationship('Rarity', back_populates='rarity')
+    types = relationship('Types', back_populates='type')
     
     
 class Player(Base):
@@ -134,3 +135,14 @@ class Rarity(Base):
     chance = Column(Float, nullable=False)
     
     rarity = relationship('Cards', back_populates='raritytable')
+    
+
+class Types(Base):
+    __tablename__ = 'types'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+    dominates = Column(Integer, ForeignKey('types.id', onupdate="CASCADE"), nullable=False)
+    
+    dom = relationship("Types", remote_side=[id])
+    type = relationship("Cards", back_populates="types")

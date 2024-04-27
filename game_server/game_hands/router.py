@@ -29,3 +29,21 @@ async def create_card(card: Card):
             raise HTTPException(409, detail=f"Card {card.name} alredy exists")
     else:
         raise HTTPException(422, detail="Invalid rarity name")
+    
+    
+@router.post('/addRarity')
+async def add_rarity(new_rarity: Rarity):
+    old_rarity = await database.get_rarity_id(new_rarity.name)
+    if old_rarity:
+        raise HTTPException(409, detail=f"Rarity {new_rarity.name} alredy exists")
+    else:
+        await database.add_rarity(new_rarity.name, new_rarity.chance)
+        
+
+@router.post('/addType')
+async def add_type(new_type: Type):
+    old_type = await database.get_type_id(new_type.name)
+    if old_type:
+        raise HTTPException(409, detail=f"Type {new_type.name} alredy exists")
+    else:
+        await database.add_type(new_type.name, new_type.dominate)
