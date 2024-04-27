@@ -36,6 +36,7 @@ class Client(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     lastname = Column(String, nullable=False)
+    email = Column(String, nullable=False)
     
     locations = relationship('Location', back_populates='client')
 
@@ -72,8 +73,9 @@ class Data(Base):
     date = Column(DateTime, nullable=False)
     PM2_5 = Column(Float, nullable=False)
     PM10 = Column(Float, nullable=False)
-    # temperature = Column(Float, nullable=False)
-    # humidity = Column(Float, nullable=False)
+    fahrenheit = Column(Integer, nullable=False)
+    celsius = Column(Integer, nullable=False)
+    humidity = Column(Integer, nullable=False)
     
     device = relationship('Device', back_populates='data')
 
@@ -107,7 +109,7 @@ class Player(Base):
     __tablename__ = 'player'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
+    nikcname = Column(String, nullable=False)
     login = Column(String, nullable=False)
     
     players = relationship('Cards', secondary=player_card_association, back_populates='cards')

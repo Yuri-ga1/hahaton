@@ -8,15 +8,16 @@ router = APIRouter()
 @router.post("/dataReceiver")
 async def data_receiver(data: ESP_data):
     date = datetime.fromtimestamp(data.date)
-    device_id = await database.get_id_by_mac(data.mac)
+    device_id = await database.get_device_by_mac(data.mac)
     if device_id:
        await database.save_data(
-            device_id,
-            data.pm2_5,
-            data.pm10,
-            # data.temperature,
-            # data.humidity,
-            date
+            device_id=device_id,
+            pmtwo=data.pm2_5,
+            pm10=data.pm10,
+            humidity=data.hum,
+            fahrenheit=data.fahr,
+            celsius=data.cel,
+            date=date
         )
     else: 
         return HTTPException(404, "Device is not registered")
@@ -28,7 +29,7 @@ async def register_device(mac: dict):
     
     mac_address = mac['mac']
     
-    device = await database.get_id_by_mac(mac_address)
+    device = await database.get_device_by_mac(mac_address)
     if device is None:
         await database.add_device(mac_address)
     else:

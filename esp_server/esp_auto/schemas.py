@@ -6,5 +6,6 @@ class ESP_data(BaseModel):
     date: int
     pm2_5: float
     pm10: float
-    # temperature: float
-    # humidity: float
+    hum: float
+    cel: float
+    fahr: int
