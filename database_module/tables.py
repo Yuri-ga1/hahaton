@@ -50,7 +50,7 @@ class Location(Base):
     street = Column(String, nullable=False)
     house_number = Column(String, nullable=False)
     
-    # devices = relationship('Device', back_populates='location')
+    devices = relationship('Device', back_populates='location')
     event_location = relationship("Events", secondary=location_event_association, back_populates="location_event")
     client = relationship('Client', back_populates='locations')
     location_points = relationship('LocationPoint', back_populates='location')
@@ -60,10 +60,10 @@ class Device(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     MAC_address = Column(String, nullable=False)
-    # location_id = Column(Integer, ForeignKey('locations.id'), nullable=False)
+    location_id = Column(Integer, ForeignKey('locations.id'), nullable=False)
     
     data = relationship('Data', back_populates='device')
-    # location = relationship('Location', back_populates='devices')
+    location = relationship('Location', back_populates='devices')
 
 class Data(Base):
     __tablename__ = 'data'

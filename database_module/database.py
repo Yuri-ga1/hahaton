@@ -40,9 +40,10 @@ class Database:
         return client.email if client else None
         
     
-    async def add_device(self, mac: str):
+    async def add_device(self, mac: str, location_id: int):
         new_device = Device(
-            MAC_address=mac
+            MAC_address=mac,
+            location_id = location_id
         )
         self.session.add(new_device)
         self.session.commit()
@@ -54,6 +55,24 @@ class Database:
             email=email
         )
         self.session.add(new_client)
+        self.session.commit()
+        
+    async def add_location(
+        self,
+        client_id: int,
+        region: str,
+        city_name: str,
+        street: str,
+        house_number: str
+    ):
+        new_location = Location(
+            client_id=client_id,
+            region=region,
+            city_name=city_name,
+            street=street,
+            house_number=house_number
+        )
+        self.session.add(new_location)
         self.session.commit()
 
     async def save_data(

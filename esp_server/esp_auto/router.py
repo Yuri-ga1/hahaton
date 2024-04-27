@@ -20,17 +20,17 @@ async def data_receiver(data: ESP_data):
             date=date
         )
     else: 
-        return HTTPException(404, "Device is not registered")
+        raise HTTPException(404, "Device is not registered")
        
 @router.post("/registerDevice")
 async def register_device(mac: dict):
     if (len(mac) != 1 and "mac" not in mac):
-        return HTTPException(422, detail="Invalid data format")
+        raise HTTPException(422, detail="Invalid data format")
     
     mac_address = mac['mac']
     
     device = await database.get_device_by_mac(mac_address)
     if device is None:
-        await database.add_device(mac_address)
+        await database.add_device(mac_address, location_id=1)
     else:
-        return HTTPException(409, detail="Device alredy exists")
+        raise HTTPException(409, detail="Device alredy exists")
