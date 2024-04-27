@@ -17,14 +17,18 @@ async def create_card(card: Card):
     if rarity_id:
         is_exist = await database.get_card(card.name)
         if is_exist is None:
-            await database.add_card(
-                name=card.name,
-                type=card.type,
-                rarity_id=rarity_id,
-                hp=card.hp,
-                damage=card.damage,
-                speed=card.speed
-            )
+            type_id = await database.get_type_id(card.type)
+            if type_id:
+                await database.add_card(
+                    name=card.name,
+                    type_id=type_id,
+                    rarity_id=rarity_id,
+                    hp=card.hp,
+                    damage=card.damage,
+                    speed=card.speed
+                )
+            else:
+                raise HTTPException(409, detail=f"Type {card.type} is not exists")
         else:
             raise HTTPException(409, detail=f"Card {card.name} alredy exists")
     else:
@@ -47,3 +51,17 @@ async def add_type(new_type: Type):
         raise HTTPException(409, detail=f"Type {new_type.name} alredy exists")
     else:
         await database.add_type(new_type.name, new_type.dominate)
+        
+@router.post("/addCardToEvent")
+async def add_card_to_event(card_event: CardToEvent):
+    card = await database.get_card(card_event.card_name)
+    event = await database.get_event(card_event.event_name)
+    
+    if card is None:
+        raise HTTPException(404, "Card is not exist")
+    if event is None:
+        raise HTTPException(404, "Event is not exist")
+    
+    await database.add_card_to_event(card.id, event.id)
+        
+        

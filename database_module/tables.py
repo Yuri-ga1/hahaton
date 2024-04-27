@@ -94,7 +94,7 @@ class Cards(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
-    type = Column(Integer, ForeignKey('types.id'), nullable=False)
+    type_id = Column(Integer, ForeignKey('types.id'), nullable=False)
     rarity_id = Column(Integer, ForeignKey('rarity.id'), nullable=False)
     hp = Column(Integer, nullable=False)
     damage = Column(Integer, nullable=False)
@@ -142,7 +142,6 @@ class Types(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
-    dominates = Column(Integer, ForeignKey('types.id', onupdate="CASCADE"), nullable=False)
+    dominates = Column(String, nullable=False)
     
-    dom = relationship("Types", remote_side=[id])
     type = relationship("Cards", back_populates="types")

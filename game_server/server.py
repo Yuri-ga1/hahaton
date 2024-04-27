@@ -14,7 +14,7 @@ async def _add_rarity():
         
 async def _add_types():
     types = ['writer', 'historical_figure', 'literary_character']
-    dominates = [3, 1, 2]
+    dominates = ['literary_character', 'writer', 'historical_figure']
     for type, slave in zip(types, dominates):
         await database.add_type(type, slave)
 

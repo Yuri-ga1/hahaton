@@ -22,3 +22,8 @@ class Rarity(BaseModel):
 class Type(BaseModel):
     name: str
     dominate: str
+    
+    
+class CardToEvent(BaseModel):
+    card_name: str
+    event_name: str

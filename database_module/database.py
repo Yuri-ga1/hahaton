@@ -1,5 +1,5 @@
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, insert
 from datetime import datetime
 
 from .tables import *
@@ -70,6 +70,13 @@ class Database:
             .first()
             
         return rarity.id if rarity else None
+    
+    async def get_event(self, name: str):
+        event = self.session.query(Events)\
+            .filter(Events.name == name)\
+            .first()
+            
+        return event if event else None
     
     async def get_type_id(self, name: str):
         type = self.session.query(Types)\
@@ -151,7 +158,7 @@ class Database:
     async def add_card(
         self,
         name: str,
-        type: str,
+        type_id: int,
         rarity_id: int,
         hp: int,
         damage: int,
@@ -159,7 +166,7 @@ class Database:
     ):
         new_card = Cards(
             name=name,
-            type=type,
+            type_id=type_id,
             rarity_id=rarity_id,
             hp=hp,
             damage=damage,
@@ -171,14 +178,22 @@ class Database:
     
     async def add_type(self, type: str, slave: str):
         type_id = await self.get_type_id(type)
-        slave_id = await self.get_type_id(slave)
         if type_id is None:
             new_type = Types(
                 name=type,
-                dominates=slave_id
+                dominates=slave
             )
             self.session.add(new_type)
             self.session.commit()
+            
+            
+    async def add_card_to_event(self, card_id: int, event_id: int):
+        new_card_on_event = insert(card_event_association).values(
+            event_id=event_id,
+            card_id=card_id
+        )
+        self.session.execute(new_card_on_event)
+        self.session.commit()
         
 
     async def save_data(
