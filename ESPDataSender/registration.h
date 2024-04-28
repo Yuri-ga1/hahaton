@@ -19,6 +19,9 @@ void sendRegistrationRequest() {
 
   int regHttpCode = regHttp.POST(regJson);
   Serial.println(regHttpCode);
+  while (regHttpCode != 1){
+    int regHttpCode = regHttp.POST(regJson);
+  }
   if (regHttpCode > 0) {
     String regPayload = regHttp.getString();
     Serial.println(regPayload);
