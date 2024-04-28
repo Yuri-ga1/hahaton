@@ -122,6 +122,8 @@ class Events(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
+    date_start = Column(DateTime, nullable=False)
+    date_end = Column(DateTime, nullable=False)
     
     event_cards = relationship('Cards', secondary=card_event_association, back_populates='events')
     location_event = relationship('Location', secondary=location_event_association, back_populates='event_location')

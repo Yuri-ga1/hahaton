@@ -1,9 +1,12 @@
 from pydantic import BaseModel
+from datetime import datetime
 from esp_server.esp_hands.schemas import Location
 
 class Event(BaseModel):
     name: str
     description: str
+    start: datetime
+    end: datetime
     
 
 class Card(BaseModel):

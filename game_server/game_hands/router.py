@@ -7,8 +7,10 @@ router = APIRouter()
 
 @router.post("/addEvent")
 async def create_event(event: Event):
-    # дата начала и дата конца
-    await database.add_event(event.name, event.description)
+    if event.start < event.end:
+        await database.add_event(event.name, event.description, event.start, event.end)
+    else:
+        raise HTTPException(409, detail=f"Еhe start date cannot be later than the end date")
     
 
 @router.post("/addCards")

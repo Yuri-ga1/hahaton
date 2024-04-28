@@ -161,10 +161,12 @@ class Database:
             self.session.add(new_rarity)
             self.session.commit()
             
-    async def add_event(self, name, description):
+    async def add_event(self, name, description: str, date_start: datetime, date_end: datetime):
         new_event = Events(
             name=name,
-            description=description
+            description=description,
+            date_start=date_start,
+            date_end=date_end
         )
         self.session.add(new_event)
         self.session.commit()
