@@ -1,5 +1,5 @@
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine, insert
+from sqlalchemy import create_engine, insert, select, update
 from datetime import datetime
 
 from .tables import *
@@ -91,6 +91,14 @@ class Database:
             .first()
             
         return player if player else None
+    
+    async def get_player_cards(self, player_id, card_id):
+        player_cards = select(player_card_association).where(
+            (player_card_association.c.player_id == player_id)&\
+            (player_card_association.c.card_id == card_id)
+        )
+        result = self.session.execute(player_cards)
+        return result.fetchone()
         
     
     async def add_device(self, mac: str, location_id: int):
@@ -218,6 +226,36 @@ class Database:
             login=login
         )
         self.session.add(new_player)
+        self.session.commit()
+        
+    async def add_player_card(
+        self,
+        player_id: int,
+        card_id: int,
+        count:int
+    ):
+        player_card = insert(player_card_association).values(
+            player_id=player_id,
+            card_id=card_id,
+            count=count
+        )
+        self.session.execute(player_card)
+        self.session.commit()
+        
+    
+    async def update_player_card_count(
+        self,
+        player_id: int,
+        card_id: int,
+        count:int
+    ):
+        player_card = update(player_card_association).where(
+            (player_card_association.c.player_id == player_id) &
+            (player_card_association.c.card_id == card_id)
+            ).values(
+                count=count
+                )
+        self.session.execute(player_card)
         self.session.commit()
         
 
