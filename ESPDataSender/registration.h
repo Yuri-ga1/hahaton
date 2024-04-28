@@ -19,7 +19,7 @@ void sendRegistrationRequest() {
 
   int regHttpCode = regHttp.POST(regJson);
   Serial.println(regHttpCode);
-  while (regHttpCode != 1){
+  while (regHttpCode != 200){
     int regHttpCode = regHttp.POST(regJson);
   }
   if (regHttpCode > 0) {
