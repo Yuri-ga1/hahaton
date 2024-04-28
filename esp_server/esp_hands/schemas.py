@@ -10,6 +10,7 @@ class Client(BaseModel):
     
 class Location(BaseModel):
     client_email: str
+    device_mac: str
     region: str
     city_name: str
     street: str

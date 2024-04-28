@@ -101,10 +101,9 @@ class Database:
         return result.fetchone()
         
     
-    async def add_device(self, mac: str, location_id: int):
+    async def add_device(self, mac: str):
         new_device = Device(
-            MAC_address=mac,
-            location_id = location_id
+            MAC_address=mac
         )
         self.session.add(new_device)
         self.session.commit()
@@ -121,6 +120,7 @@ class Database:
     async def add_location(
         self,
         client_id: int,
+        device_id: int,
         region: str,
         city_name: str,
         street: str,
@@ -128,6 +128,7 @@ class Database:
     ):
         new_location = Location(
             client_id=client_id,
+            device_id=device_id,
             region=region,
             city_name=city_name,
             street=street,

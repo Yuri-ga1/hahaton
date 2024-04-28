@@ -1,6 +1,10 @@
 from pydantic import BaseModel
 
 
+class MacAddress(BaseModel):
+    mac: str
+
+
 class ESP_data(BaseModel):
     mac: str
     date: int

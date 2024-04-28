@@ -24,6 +24,9 @@ async def add_client(client: Client):
 
 @router.post("/addLocation")
 async def add_location(location: Location):
+    device_id = await database.get_device_by_mac(location.device_mac)
+    if device_id is None:
+        raise HTTPException(404, detail=f"Device is not exist")
     old_location = await database.get_location_id(
         region=location.region,
         city=location.city_name,
@@ -31,12 +34,12 @@ async def add_location(location: Location):
         house_number=location.house_number
     )
     if old_location:
-        print(old_location)
         raise HTTPException(409, detail=f"Location alredy exists")
     else:
         client_id = await database.get_client_by_email(location.client_email)
         await database.add_location(
             client_id=client_id,
+            device_id=device_id,
             region=location.region,
             city_name=location.city_name,
             street=location.street,

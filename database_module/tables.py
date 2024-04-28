@@ -45,6 +45,7 @@ class Location(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     client_id = Column(Integer, ForeignKey('clients.id'), nullable=False)
+    device_id = Column(Integer, ForeignKey('devices.id'), nullable=False)
     region = Column(String, nullable=False)
     city_name = Column(String, nullable=False)
     street = Column(String, nullable=False)
@@ -60,10 +61,9 @@ class Device(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     MAC_address = Column(String, nullable=False)
-    location_id = Column(Integer, ForeignKey('locations.id'), nullable=False)
     
     data = relationship('Data', back_populates='device')
-    location = relationship('Location', back_populates='devices')
+    location = relationship('Location', back_populates='devices')    
 
 class Data(Base):
     __tablename__ = 'data'
