@@ -7,3 +7,6 @@
 
 #define SDS_RX 4
 #define SDS_TX 5
+
+#define DHTPIN 14
+#define DHTTYPE DHT11  
