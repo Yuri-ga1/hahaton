@@ -28,6 +28,11 @@ async def shutdown():
 async def welcome():
     return {"message": "Hello, world"}
 
+@app.get("/getData")
+async def get_data():
+    result = await database.get_data()
+    return result
+
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)

@@ -285,5 +285,11 @@ class Database:
         self.session.commit()
         
 
+    async def get_data(self):
+        data = self.session.query(Data).all()
+            
+        return data
+        
+
 
 database = Database()
