@@ -6,7 +6,7 @@ from .tables import *
 
 class Database:
 
-    def __init__(self, db_name: str = "DATABASE"):
+    def __init__(self, db_name: str = "Legacy"):
         self.db_name = db_name
         self.session = None
 
